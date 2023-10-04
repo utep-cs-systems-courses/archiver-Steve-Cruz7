@@ -49,6 +49,7 @@ for target in files:
         exit()
     
 
+#this if statement would be my framer
 #create will be writing to file descriptor 1
 if (command == "c"):
     for target in files:
@@ -74,6 +75,8 @@ if (command == "c"):
 
         #Repeat the process for the rest of the files
 
+        
+#this would be my deframer
 #Moving onto extracting section
 
 elif (command == "x"):
