@@ -23,6 +23,8 @@ def EbitConversion(size):
 def convertBack(size):
     total = 0
     convert = 128
+    if (size == 0):
+        return size
     for character in size:
         if (character == "1"):
             total += convert
@@ -55,7 +57,7 @@ if (command == "c"):
     for target in files:
         
         #opening file to read
-        fd = os.open(target, os.O_RDONLY)
+        fd = os.open(target, os.O_RDONLY | os.O_WRONLY)
         
         #writing size of filename
         size = EbitConversion(len(target))
@@ -78,17 +80,21 @@ if (command == "c"):
         
 #this would be my deframer
 #Moving onto extracting section
-
 elif (command == "x"):
     for target in files:
+        
         fd = os.open(target, os.O_RDONLY)
-        nameSize = convertBack(os.read(fd, 8))
-        fileName = os.read(fd, nameSize)
+        while(True):
+            nameSize = convertBack(os.read(fd, 8).decode())
+            if(nameSize == 0): #this is checking to see if os.read reaches EoF
+                break
+            fileName = os.read(fd, nameSize).decode()
+            #fd for target file
+            fileName = os.open(fileName, os.O_WRONLY)
 
-        fileSize = convertBack(os.read(fd, 8))
-        fileContents = os.read(fd, fileSize)
-        os.write(1, fileName)
-        os.write(1, fileContents)
+            fileSize = convertBack(os.read(fd, 8).decode())
+            fileContents = os.read(fd, fileSize)
+            os.write(fileName, fileContents)
                                
     exit()
 
